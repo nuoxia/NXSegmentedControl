@@ -39,6 +39,7 @@ typedef void(^SelectedBlock)(NSUInteger index);
         self.borderColor = RGB(0x5f, 0x64, 0x6e);
         
         _segments = [NSMutableArray arrayWithCapacity:0];
+        _numberOfSegments = 0;
     }
     return self;
 }
@@ -229,6 +230,7 @@ typedef void(^SelectedBlock)(NSUInteger index);
 }
 
 - (void)insertSegment:(NXSegmentItem *)segment atIndex:(NSUInteger)idx {
+    _numberOfSegments ++;
     [_segments insertObject:segment atIndex:idx];
     [self addSubview:segment];
     
