@@ -249,14 +249,10 @@ typedef void(^SelectedBlock)(NSUInteger index);
     for (NSUInteger i = 0; i < _segments.count; ++i) {
         CGPoint cPos = [touch locationInView:_segments[i]];
         if ([_segments[i] pointInside:cPos withEvent:event]) {
-            self.selectedSegmentIndex = i;
             
-            if (_selectedBlock) {
-                _selectedBlock(i);
-            }
-            
-            if (self.delegate && [self.delegate respondsToSelector:@selector(segmentedControl:didSelectedIndex:)]) {
-                [self.delegate segmentedControl:self didSelectedIndex:i];
+            NXSegmentItem *segment = _segments[i];
+            if (segment && segment.titleLabel) {
+                segment.titleLabel.backgroundColor = [UIColor lightGrayColor];
             }
             
             break;
@@ -270,6 +266,25 @@ typedef void(^SelectedBlock)(NSUInteger index);
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     [super touchesMoved:touches withEvent:event];
+    
+    UITouch *touch = [touches anyObject];
+    
+    for (NSUInteger i = 0; i < _segments.count; ++i) {
+        CGPoint cPos = [touch locationInView:_segments[i]];
+        if ([_segments[i] pointInside:cPos withEvent:event]) {
+            self.selectedSegmentIndex = i;
+            
+            if (_selectedBlock) {
+                _selectedBlock(i);
+            }
+            
+            if (self.delegate && [self.delegate respondsToSelector:@selector(segmentedControl:didSelectedIndex:)]) {
+                [self.delegate segmentedControl:self didSelectedIndex:i];
+            }
+            
+            break;
+        }
+    }
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
