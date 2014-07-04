@@ -232,6 +232,10 @@ typedef void(^SelectedBlock)(NSUInteger index);
 - (void)insertSegment:(NXSegmentItem *)segment atIndex:(NSUInteger)idx {
     _numberOfSegments ++;
     [_segments insertObject:segment atIndex:idx];
+    if (segment && segment.titleLabel) {
+        segment.titleLabel.backgroundColor = _unselectedSegmentColor;
+        segment.titleLabel.textColor = _unselectedTextColor;
+    }
     [self addSubview:segment];
     
     if (!CGRectIsEmpty(self.frame)) {
