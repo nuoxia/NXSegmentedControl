@@ -17,6 +17,7 @@
 
 @interface NXSegmentedControl : UIControl
 
+@property (nonatomic, assign) CGFloat fontSize; // default 14.f
 @property (nonatomic, strong) UIColor *selectedTextColor; // default white color
 @property (nonatomic, strong) UIColor *selectedSegmentColor; // default RGB(0x5f, 0x64, 0x6e)
 @property (nonatomic, strong) UIColor *unselectedTextColor;  // default RGB(0x5f, 0x64, 0x6e)

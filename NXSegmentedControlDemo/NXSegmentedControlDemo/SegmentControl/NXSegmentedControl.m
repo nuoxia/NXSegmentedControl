@@ -92,6 +92,7 @@ typedef void(^SelectedBlock)(NSUInteger index);
     
     _selectedSegmentIndex = 0;
     
+    _fontSize = 14.f;
     _selectedSegmentColor = RGB(0x5f, 0x64, 0x6e);
     _selectedTextColor = [UIColor whiteColor];
     _unselectedSegmentColor = [UIColor whiteColor];
@@ -137,6 +138,20 @@ typedef void(^SelectedBlock)(NSUInteger index);
     self.layer.borderColor = borderColor.CGColor;
 }
 
+- (void)setFontSize:(CGFloat)fontSize {
+    _fontSize = fontSize;
+    
+    if (_segments && _segments.count > 0) {
+        __weak NXSegmentedControl *wSelf = self;
+        [_segments enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            NXSegmentItem *segment = wSelf.segments[idx];
+            if (segment && segment.titleLabel) {
+                segment.titleLabel.font = [UIFont systemFontOfSize:_fontSize];
+            }
+        }];
+    }
+}
+
 - (void)setSelectedSegmentColor:(UIColor *)selectedSegmentColor {
     
     _selectedSegmentColor = selectedSegmentColor;
@@ -163,6 +178,10 @@ typedef void(^SelectedBlock)(NSUInteger index);
 - (void)setUnselectedSegmentColor:(UIColor *)unselectedSegmentColor {
     _unselectedSegmentColor = unselectedSegmentColor;
     
+    if (_segments == nil || _segments.count == 0) {
+        return;
+    }
+    
     __weak NXSegmentedControl *wSelf = self;
     [_segments enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         if (wSelf.selectedSegmentIndex != idx) {
@@ -176,6 +195,10 @@ typedef void(^SelectedBlock)(NSUInteger index);
 
 - (void)setUnselectedTextColor:(UIColor *)unselectedTextColor {
     _unselectedTextColor = unselectedTextColor;
+    
+    if (_segments == nil || _segments.count == 0) {
+        return;
+    }
     
     __weak NXSegmentedControl *wSelf = self;
     [_segments enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
