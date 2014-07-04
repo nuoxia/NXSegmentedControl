@@ -26,7 +26,7 @@
     if (self = [self initWithFrame:CGRectZero]) {
         self.titleLabel = [[UILabel alloc]initWithFrame:CGRectZero];
         self.titleLabel.text = title;
-        self.titleLabel.backgroundColor = [UIColor clearColor];
+        self.titleLabel.backgroundColor = [UIColor whiteColor];
         self.titleLabel.font = [UIFont systemFontOfSize:14.f];
         self.titleLabel.textColor = RGB(0x5f, 0x64, 0x6e);
         self.titleLabel.textAlignment = NSTextAlignmentCenter;

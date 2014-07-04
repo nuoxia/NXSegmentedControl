@@ -19,24 +19,39 @@ typedef void(^SelectedBlock)(NSUInteger index);
 @property (nonatomic, strong) SelectedBlock selectedBlock;
 @property (nonatomic, readwrite) NSUInteger numberOfSegments;
 
-@property (nonatomic, strong) NXSegmentItem *selectedSegment;
+//@property (nonatomic, strong) NXSegmentItem *selectedSegment;
 
 @end
 
 @implementation NXSegmentedControl
 
+#pragma mark -
+#pragma mark Construct Functions
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+        self.backgroundColor = [UIColor clearColor];
+        self.clipsToBounds = YES;
+        self.cornerRadius = 4.f;
+        self.borderWidth = 1.f;
+        self.borderColor = RGB(0x5f, 0x64, 0x6e);
         
+        _segments = [NSMutableArray arrayWithCapacity:0];
     }
     return self;
 }
 
-- (instancetype)initWithItems:(NSArray *)itemsm selectedSegmentDelegate:(id)delegate {
-    if (self = [super initWithFrame:CGRectZero]) {
+- (instancetype)initWithItems:(NSArray *)items selectedSegmentDelegate:(id)delegate {
+    if (self = [self initWithFrame:CGRectZero]) {
+        
+        if (items == nil || items.count == 0) {
+            return nil;
+        }
+        
+        [self createSegments:items];
+        
         self.delegate = delegate;
     }
     
@@ -44,58 +59,132 @@ typedef void(^SelectedBlock)(NSUInteger index);
 }
 
 - (instancetype)initWithItems:(NSArray *)items selectedSgementIndex:(void (^)(NSUInteger))selectedBlock {
-    if (self = [super initWithFrame:CGRectZero]) {
+    if (self = [self initWithFrame:CGRectZero]) {
         
         if (items == nil || items.count == 0) {
             return nil;
         }
         
-        self.backgroundColor = [UIColor whiteColor];
-        self.clipsToBounds = YES;
-        self.layer.cornerRadius = 4.f;
-        self.layer.borderWidth = 1.f;
-        self.layer.borderColor = RGB(0x5f, 0x64, 0x6e).CGColor;
+        [self createSegments:items];
         
-        _numberOfSegments = [items count];
-        _segments = [NSMutableArray arrayWithCapacity:0];
-        for (NSUInteger index = 0; index < items.count; ++ index) {
-            if ([items[index] isKindOfClass:[NSString class]]) {
-                NXSegmentItem *segment = [[NXSegmentItem alloc]initWithTile:items[index]];
-                [_segments addObject:segment];
-                [self addSubview:segment];
-            } else if ([items[index] isKindOfClass:[UIImage class]]) {
-                NXSegmentItem *segment = [[NXSegmentItem alloc]initWithImage:items[index]];
-                [_segments addObject:segment];
-                [self addSubview:segment];
-            }
-        }
-        
-        _selectedSegmentIndex = 0;
-        _selectedSegmentColor = RGB(0x5f, 0x64, 0x6e);
-        _selectedTextColor = [UIColor whiteColor];
-        _unselectedSegmentColor = [UIColor whiteColor];
-        _unselectedTextColor = RGB(0x5f, 0x64, 0x6e);
-        self.selectedSegment = _segments[0];
-        if (self.selectedSegment && self.selectedSegment.titleLabel) {
-            self.selectedSegment.titleLabel.backgroundColor = _selectedSegmentColor;
-            self.selectedSegment.titleLabel.textColor = _selectedTextColor;
-        }
         _selectedBlock = selectedBlock;
     }
     
     return self;
 }
 
+- (void)createSegments: (NSArray *)items {
+    _numberOfSegments = [items count];
+    for (NSUInteger index = 0; index < items.count; ++ index) {
+        if ([items[index] isKindOfClass:[NSString class]]) {
+            NXSegmentItem *segment = [[NXSegmentItem alloc]initWithTile:items[index]];
+            [_segments addObject:segment];
+            [self addSubview:segment];
+        } else if ([items[index] isKindOfClass:[UIImage class]]) {
+            NXSegmentItem *segment = [[NXSegmentItem alloc]initWithImage:items[index]];
+            [_segments addObject:segment];
+            [self addSubview:segment];
+        } else {
+            NSLog(@"Not Support Type!");
+        }
+    }
+    
+    _selectedSegmentIndex = 0;
+    
+    _selectedSegmentColor = RGB(0x5f, 0x64, 0x6e);
+    _selectedTextColor = [UIColor whiteColor];
+    _unselectedSegmentColor = [UIColor whiteColor];
+    _unselectedTextColor = RGB(0x5f, 0x64, 0x6e);
+    
+    NXSegmentItem *segment = _segments[0];
+    if (segment && segment.titleLabel) {
+        segment.titleLabel.backgroundColor = _selectedSegmentColor;
+        segment.titleLabel.textColor = _selectedTextColor;
+    }
+}
+
+#pragma mark -
+#pragma mark Set Functions
 - (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
     
-    CGFloat segmentWidth = (frame.size.width)/_segments.count;
-    CGFloat segmentHeight = frame.size.height;
+    [self setSegmentsFrame];
+}
 
+- (void)setSegmentsFrame {
+    CGFloat segmentWidth = (self.frame.size.width)/_segments.count;
+    CGFloat segmentHeight = self.frame.size.height;
+    
     for (NSUInteger i = 0; i < _segments.count; ++i) {
         NXSegmentItem *segment = _segments[i];
         segment.frame = CGRectMake(0.f + i * segmentWidth, 0.f, segmentWidth, segmentHeight);
     }
+}
+
+- (void)setCornerRadius:(CGFloat)cornerRadius {
+    _cornerRadius = cornerRadius;
+    self.layer.cornerRadius = cornerRadius;
+}
+
+- (void)setBorderWidth:(CGFloat)borderWidth {
+    _borderWidth = borderWidth;
+    self.layer.borderWidth = borderWidth;
+}
+
+- (void)setBorderColor:(UIColor *)borderColor {
+    _borderColor = borderColor;
+    self.layer.borderColor = borderColor.CGColor;
+}
+
+- (void)setSelectedSegmentColor:(UIColor *)selectedSegmentColor {
+    
+    _selectedSegmentColor = selectedSegmentColor;
+    
+    if (_segments && _segments.count > 0) {
+        NXSegmentItem *segment = _segments[_selectedSegmentIndex];
+        if (segment && segment.titleLabel) {
+            segment.titleLabel.backgroundColor = _selectedSegmentColor;
+        }
+    }
+}
+
+- (void)setSelectedTextColor:(UIColor *)selectedTextColor {
+    _selectedTextColor = selectedTextColor;
+    
+    if (_segments && _segments.count > 0) {
+        NXSegmentItem *segment = _segments[_selectedSegmentIndex];
+        if (segment && segment.titleLabel) {
+            segment.titleLabel.textColor = _selectedTextColor;
+        }
+    }
+}
+
+- (void)setUnselectedSegmentColor:(UIColor *)unselectedSegmentColor {
+    _unselectedSegmentColor = unselectedSegmentColor;
+    
+    __weak NXSegmentedControl *wSelf = self;
+    [_segments enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if (wSelf.selectedSegmentIndex != idx) {
+            NXSegmentItem *segment = wSelf.segments[idx];
+            if (segment && segment.titleLabel) {
+                segment.titleLabel.backgroundColor = unselectedSegmentColor;
+            }
+        }
+    }];
+}
+
+- (void)setUnselectedTextColor:(UIColor *)unselectedTextColor {
+    _unselectedTextColor = unselectedTextColor;
+    
+    __weak NXSegmentedControl *wSelf = self;
+    [_segments enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if (wSelf.selectedSegmentIndex != idx) {
+            NXSegmentItem *segment = wSelf.segments[idx];
+            if (segment && segment.titleLabel) {
+                segment.titleLabel.textColor = unselectedTextColor;
+            }
+        }
+    }];
 }
 
 -(void)setSelectedSegmentIndex:(NSUInteger)selectedSegmentIndex {
@@ -119,13 +208,15 @@ typedef void(^SelectedBlock)(NSUInteger index);
     }
 }
 
+#pragma mark -
+#pragma mark Insert new Segment for SegmentedControl
 - (void)insertSegmentTitle:(NSString *)title atIndex:(NSUInteger)index {
     if (title == nil || _segments == nil || index > _segments.count) {
         return;
     }
     
     NXSegmentItem *segment = [[NXSegmentItem alloc]initWithTile:title];
-    [_segments insertObject:segment atIndex:index];
+    [self insertSegment:segment atIndex:index];
 }
 
 - (void)insertSegmentImage:(UIImage *)image atIndex:(NSUInteger)index {
@@ -134,15 +225,20 @@ typedef void(^SelectedBlock)(NSUInteger index);
     }
     
     NXSegmentItem *segment = [[NXSegmentItem alloc]initWithImage:image];
-    [_segments insertObject:segment atIndex:index];
+    [self insertSegment:segment atIndex:index];
 }
 
-- (void)layoutSubviews {
+- (void)insertSegment:(NXSegmentItem *)segment atIndex:(NSUInteger)idx {
+    [_segments insertObject:segment atIndex:idx];
+    [self addSubview:segment];
     
+    if (!CGRectIsEmpty(self.frame)) {
+        [self setSegmentsFrame];
+    }
 }
 
 #pragma mark -
-#pragma mark Tracking
+#pragma mark Handle Event ...
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
     return CGRectContainsPoint(self.bounds, point);
 }

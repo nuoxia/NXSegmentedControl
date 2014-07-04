@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>ED8C9DA6-0265-49FF-8516-C1D9535194EA</string>
+	<key>IDESourceControlProjectName</key>
+	<string>NXSegmentedControlDemo</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>F6E898A5-AC39-4BCA-BD28-789CFAE36DED</key>
+		<string>ssh://github.com/nuoxia/NXSegmentedControl.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>NXSegmentedControlDemo/NXSegmentedControlDemo.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>F6E898A5-AC39-4BCA-BD28-789CFAE36DED</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/nuoxia/NXSegmentedControl.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>F6E898A5-AC39-4BCA-BD28-789CFAE36DED</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>F6E898A5-AC39-4BCA-BD28-789CFAE36DED</string>
+			<key>IDESourceControlWCCName</key>
+			<string>NXSegmentedControl</string>
+		</dict>
+	</array>
+</dict>
+</plist>
